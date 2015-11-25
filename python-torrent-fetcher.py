@@ -16,6 +16,9 @@ url = "http://torrentproject.org/?s="+search_title+"&out=json&num=150"
 response = urlopen(url).read().decode('utf8')
 obj = json.loads(response)
 total_found = int(obj.get('total_found'))
+if total_found == 0:
+    print("Found 0 results, exiting")
+    exit()
 
 if total_found > 150:
     search_max = 150
@@ -23,7 +26,12 @@ else:
     search_max = total_found
 print("==============================RESULTS==============================")
 for i in range(search_max, 0, -1):
-    print(i,")",obj.get(str(i), {}).get("title")," | Size:", hbytes(obj.get(str(i), {}).get("torrent_size")), "Seeds:", obj.get(str(i), {}).get("seeds"))
+    title= obj.get(str(i), {}).get("title")
+    seeds = obj.get(str(i), {}).get("seeds")
+    size = hbytes(obj.get(str(i), {}).get("torrent_size"))
+    leechers = obj.get(str(i), {}).get("leechs")
+    print("--------------------------------------------------------------------------")
+    print("(",i,")",title,"\n Seeders:",seeds," | Leechers:",leechers," | Size:",size)
 print("==============================RESULTS==============================")
 
 if total_found > 150:
@@ -31,9 +39,16 @@ if total_found > 150:
 print("Total torrents found:",total_found)
 valid_choice = 0
 while valid_choice==0:
-    choice = str(input("Type in the number of the torrent you want to download:"))
-    if 0 < int(choice) < search_max :
-        valid_choice = 1
+    try:
+        choice = str(input("Type in the number of the torrent you want to download or type 0 to exit:"))
+        if 0 < int(choice) < search_max :
+            valid_choice = 1
+        elif int(choice) == 0:
+            print("Exiting...")
+            exit()
+    except ValueError:
+        print("Select a possible number, please.")
+        continue
 
 choice_title = obj.get(choice, {}).get("title")
 choice_hash = obj.get(choice, {}).get("torrent_hash")
@@ -44,7 +59,8 @@ obj = json.loads(response)
 torrent_link = "magnet:?xt=urn:btih:"+choice_hash+"&dn="+choice_title
 for i in obj:
     torrent_link += "&tr="+i
-print("Launching xdg-open with torrent link..")
+print("Launching xdg-open with torrent link...")
 cmd="xdg-open \""+torrent_link+"\""
 os.system(cmd)
 print("Exit")
+exit()

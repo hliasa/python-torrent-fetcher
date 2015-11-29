@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import gi,json,os
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk,GObject,Pango
+from gi.repository import Gtk,Pango
 from urllib.request import urlopen
 
 columns = ["Torrent Name", "Seeders", "Leechers", "Size","hash"]

@@ -9,7 +9,7 @@ columns = ["Torrent Name", "Seeders", "Leechers", "Size","hash"]
 class MainWindow(Gtk.Window):
 
     def __init__(self):
-        Gtk.Window.__init__(self, title="Lol")
+        Gtk.Window.__init__(self, title="Python torrent fetcher")
         grid = Gtk.Grid()
         grid.set_row_spacing(5)
         grid.set_column_spacing(5)
